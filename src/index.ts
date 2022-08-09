@@ -31,32 +31,17 @@ const sucesso = {
     CRIADO_SUCESSO: { status: 201, message: "Conta criado com sucesso!" },
 }
 
+//retorna todas as contas
 app.get('/contas', (req: Request, res: Response) => {
-    try{
+    try {
 
-        if(!contas){
-            throw new Error(erros.ERRO.message)
-        }
-        const allContas = contas.map(conta => conta)
-        res.status(sucesso.SUCESSO.status).send(allContas)
+        if (!contas) { throw erros }
+
+        res.status(sucesso.SUCESSO.status).send(contas)
     }
-    catch(error: any){
-        switch (error.message) {
-            case erros.CREDENCIAIS_INVALIDAS.message:
-                res.status(erros.CREDENCIAIS_INVALIDAS.status).send(erros.CREDENCIAIS_INVALIDAS.message)
-                break;
-            case erros.NAO_ENCONTRADO.message:
-                res.status(erros.NAO_ENCONTRADO.status).send(erros.NAO_ENCONTRADO.message)
-                break;
-            case erros.CONTA_EXISTENTE.message:
-                res.status(erros.CONTA_EXISTENTE.status).send(erros.CONTA_EXISTENTE.message)
-                break;
-            case erros.DADOS_AUSENTES.message:
-                res.status(erros.DADOS_AUSENTES.status).send(erros.DADOS_AUSENTES.message)
-                break;
-            default:
-                res.status(erros.ERRO.status).send(erros.ERRO.message)
-        }
+    catch (error: any) {
+        res.status(erros.ERRO.status).send(erros.ERRO.message)
+
     }
 })
 
@@ -66,37 +51,18 @@ app.get('/contas/cliente', (req: Request, res: Response) => {
     try {
         const { cpf } = req.query
 
-        if (!cpf) { throw new Error(erros.NAO_ENCONTRADO.message) }
+        if (!cpf) { throw erros.NAO_ENCONTRADO }
 
         const contaUser = contas.find(conta => conta.cpf === cpf)
-        
 
         if (!contaUser) {
-
-            throw new Error(erros.NAO_ENCONTRADO.message)
+            throw erros.NAO_ENCONTRADO 
         }
-    
 
         res.status(sucesso.SUCESSO.status).send({ saldo: contaUser.saldo })
 
     } catch (error: any) {
-
-        switch (error.message) {
-            case erros.CREDENCIAIS_INVALIDAS.message:
-                res.status(erros.CREDENCIAIS_INVALIDAS.status).send(erros.CREDENCIAIS_INVALIDAS.message)
-                break;
-            case erros.NAO_ENCONTRADO.message:
-                res.status(erros.NAO_ENCONTRADO.status).send(erros.NAO_ENCONTRADO.message)
-                break;
-            case erros.CONTA_EXISTENTE.message:
-                res.status(erros.CONTA_EXISTENTE.status).send(erros.CONTA_EXISTENTE.message)
-                break;
-            case erros.DADOS_AUSENTES.message:
-                res.status(erros.DADOS_AUSENTES.status).send(erros.DADOS_AUSENTES.message)
-                break;
-            default:
-                res.status(erros.ERRO.status).send(erros.ERRO.message)
-        }
+        res.status(erros.NAO_ENCONTRADO.status).send(erros.NAO_ENCONTRADO.message)
     }
 })
 
@@ -108,7 +74,7 @@ app.post('/contas', (req: Request, res: Response) => {
         const { nome, cpf, dataNascimento, saldo, extrato } = req.body
 
         if (!nome || !cpf || !dataNascimento || !saldo || !extrato) {
-            throw new Error(erros.DADOS_AUSENTES.message)
+            throw erros.DADOS_AUSENTES
         }
 
         const novaConta: Conta = {
@@ -125,22 +91,7 @@ app.post('/contas', (req: Request, res: Response) => {
         res.status(sucesso.CRIADO_SUCESSO.status).send(sucesso.CRIADO_SUCESSO.message)
 
     } catch (error: any) {
-        switch (error.message) {
-            case erros.CREDENCIAIS_INVALIDAS.message:
-                res.status(erros.CREDENCIAIS_INVALIDAS.status).send(erros.CREDENCIAIS_INVALIDAS.message)
-                break;
-            case erros.NAO_ENCONTRADO.message:
-                res.status(erros.NAO_ENCONTRADO.status).send(erros.NAO_ENCONTRADO.message)
-                break;
-            case erros.CONTA_EXISTENTE.message:
-                res.status(erros.CONTA_EXISTENTE.status).send(erros.CONTA_EXISTENTE.message)
-                break;
-            case erros.DADOS_AUSENTES.message:
-                res.status(erros.DADOS_AUSENTES.status).send(erros.DADOS_AUSENTES.message)
-                break;
-            default:
-                res.status(erros.ERRO.status).send(erros.ERRO.message)
-        }
+        res.status(erros.DADOS_AUSENTES.status).send(erros.DADOS_AUSENTES.message)
     }
 
 })
@@ -153,7 +104,7 @@ app.post('/contas/deposito', (req: Request, res: Response) => {
         const { cpf, saldo } = req.body
 
         if (!cpf || !saldo) {
-            throw new Error(erros.DADOS_AUSENTES.message)
+            throw erros.DADOS_AUSENTES
         }
 
         contas.forEach((cadaConta) => {
@@ -164,24 +115,8 @@ app.post('/contas/deposito', (req: Request, res: Response) => {
             }
         })
 
-
     } catch (error: any) {
-        switch (error.message) {
-            case erros.CREDENCIAIS_INVALIDAS.message:
-                res.status(erros.CREDENCIAIS_INVALIDAS.status).send(erros.CREDENCIAIS_INVALIDAS.message)
-                break;
-            case erros.NAO_ENCONTRADO.message:
-                res.status(erros.NAO_ENCONTRADO.status).send(erros.NAO_ENCONTRADO.message)
-                break;
-            case erros.CONTA_EXISTENTE.message:
-                res.status(erros.CONTA_EXISTENTE.status).send(erros.CONTA_EXISTENTE.message)
-                break;
-            case erros.DADOS_AUSENTES.message:
-                res.status(erros.DADOS_AUSENTES.status).send(erros.DADOS_AUSENTES.message)
-                break;
-            default:
-                res.status(erros.ERRO.status).send(erros.ERRO.message)
-        }
+        res.status(erros.DADOS_AUSENTES.status).send(erros.DADOS_AUSENTES.message)
     }
 })
 
@@ -192,49 +127,46 @@ app.post('/contas/cliente/pagamentos', (req: Request<{}, {}, { cpf: string, valo
         const { cpf, valor, data, descricao } = req.body
 
         if (!cpf || !valor || !data || !descricao) {
-            throw new Error(erros.DADOS_AUSENTES.message)
+            throw erros.DADOS_AUSENTES
         }
 
         const novaData = (data as string).split('/')
         const dia = Number(novaData[0])
-        const mes: number = Number(novaData[1])
-        const ano: number = Number(novaData[2])
+        const mes = Number(novaData[1])
+        const ano = Number(novaData[2])
 
-        let newExtrato
+
         contas.forEach((cadaConta) => {
 
-            if (cadaConta.cpf === cpf) {
-                if (cadaConta.saldo >= valor) {
-                    if (ano === anoAtual && mes >= mesAtual && dia >= diaAtual || data === isNaN || data === undefined) {
-                        cadaConta.saldo -= valor
-                        newExtrato = {
-                            valor,
-                            data,
-                            descricao
-                        }
-                        cadaConta.extrato.push(newExtrato)
-                        return newExtrato
-                    }
-                    throw new Error(erros.DADOS_AUSENTES.message) //data de pagamento não autorizada
-                }
-                throw new Error(erros.ERRO.message) //'Saldo insuficiente'
+            //posso fazer dessa forma pois o throw interrompe a execução do código.
+
+            if (cadaConta.cpf !== cpf) {
+                throw erros.NAO_ENCONTRADO
             }
-            throw new Error(erros.NAO_ENCONTRADO.message) //'Conta não localizada' 
+
+            if (cadaConta.saldo < valor) {
+                throw erros.ERRO
+            }
+
+            if (!(ano === anoAtual && mes >= mesAtual && dia >= diaAtual || data === isNaN || data === undefined)) {
+                throw erros.DADOS_AUSENTES
+            }
+
+            cadaConta.saldo -= valor
+            const newExtrato = {
+                valor,
+                data,
+                descricao
+            }
+            cadaConta.extrato.push(newExtrato)
+
+            res.status(sucesso.SUCESSO.status).send(newExtrato)
         })
-
-        res.status(sucesso.SUCESSO.status).send(newExtrato)
-
 
     } catch (error: any) {
         switch (error.message) {
-            case erros.CREDENCIAIS_INVALIDAS.message:
-                res.status(erros.CREDENCIAIS_INVALIDAS.status).send(erros.CREDENCIAIS_INVALIDAS.message)
-                break;
             case erros.NAO_ENCONTRADO.message:
                 res.status(erros.NAO_ENCONTRADO.status).send(erros.NAO_ENCONTRADO.message)
-                break;
-            case erros.CONTA_EXISTENTE.message:
-                res.status(erros.CONTA_EXISTENTE.status).send(erros.CONTA_EXISTENTE.message)
                 break;
             case erros.DADOS_AUSENTES.message:
                 res.status(erros.DADOS_AUSENTES.status).send(erros.DADOS_AUSENTES.message)
@@ -249,25 +181,21 @@ app.post('/contas/cliente/pagamentos', (req: Request<{}, {}, { cpf: string, valo
 app.post('/contas/transferencia', (req: Request, res: Response) => {
 
     try {
-
         const { cpfDestinatario, nomeDestinatario, cpfRemetente, nomeRemetente, valor } = req.body
 
-        if(!cpfDestinatario || !nomeDestinatario || !cpfRemetente || !nomeRemetente || !valor){
-            throw new Error(erros.DADOS_AUSENTES.message)
+        if (!cpfDestinatario || !nomeDestinatario || !cpfRemetente || !nomeRemetente || !valor) {
+            throw erros.DADOS_AUSENTES
         }
-        
+
         let contaDestinatarioAlterada
         contas.forEach((cadaConta) => {
-            
+
             if (cadaConta.cpf === cpfRemetente && cadaConta.saldo >= valor) {
-                
                 contas.forEach((contaDestinatario) => {
                     if (contaDestinatario.cpf === cpfDestinatario) {
                         cadaConta.saldo -= valor
                         contaDestinatario.saldo += valor
-
                         contaDestinatarioAlterada = contaDestinatario.cpf
-                        return contaDestinatarioAlterada
                     }
                 })
             }
@@ -276,22 +204,7 @@ app.post('/contas/transferencia', (req: Request, res: Response) => {
         res.status(sucesso.SUCESSO.status).send(contaDestinatarioAlterada)
 
     } catch (error: any) {
-        switch (error.message) {
-            case erros.CREDENCIAIS_INVALIDAS.message:
-                res.status(erros.CREDENCIAIS_INVALIDAS.status).send(erros.CREDENCIAIS_INVALIDAS.message)
-                break;
-            case erros.NAO_ENCONTRADO.message:
-                res.status(erros.NAO_ENCONTRADO.status).send(erros.NAO_ENCONTRADO.message)
-                break;
-            case erros.CONTA_EXISTENTE.message:
-                res.status(erros.CONTA_EXISTENTE.status).send(erros.CONTA_EXISTENTE.message)
-                break;
-            case erros.DADOS_AUSENTES.message:
-                res.status(erros.DADOS_AUSENTES.status).send(erros.DADOS_AUSENTES.message)
-                break;
-            default:
-                res.status(erros.ERRO.status).send(erros.ERRO.message)
-        }
+        res.status(erros.DADOS_AUSENTES.status).send(erros.DADOS_AUSENTES.message)
     }
 })
 
